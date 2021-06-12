@@ -1,34 +1,62 @@
 version: '3.8'
 
 services:
-    dev:
-        container_name: todo_api_dev
-        image: nestjs-api-dev
-        build:
-            context: .
-            target: development
-            dockerfile: ./Dockerfile
-        command: npm run start:debug
-        ports:
-            - 3000:3000
-            - 9229:9229
-        volumes:
-            - .:/usr/src/app
-            - /usr/src/app/node_modules
-        restart: unless-stopped
-    prod:
-        container_name: todo_api_prod
-        image: todo-api-prod
-        build:
-            context: .
-            target: production
-            dockerfile: ./Dockerfile
-        command: npm run start:prod
-        ports:
-            - 3000:3000
-            - 9229:9229
-        volumes:
-            - .:/usr/src/app
-            - /usr/src/app/node_modules
-        restart: unless-stopped
+  dev:
+    container_name: todo_api_dev
+    image: 'nestjs-api-dev'
+    build:
+      context: .
+      target: development
+      dockerfile: ./Dockerfile
+    command: npm run start:debug
+    ports:
+      - '3000:3000'
+      - '9229:9229'
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - postgres
+    restart: unless-stopped
+    networks:
+      - app-connect
+
+  prod:
+    container_name: todo_api_prod
+    image: 'todo-api-prod'
+    build:
+      context: .
+      target: production
+      dockerfile: ./Dockerfile
+    command: npm run start:prod
+    ports:
+      - '3000:3000'
+      - '9229:9229'
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - postgres
+    restart: unless-stopped
+    networks:
+      - app-connect
+
+  postgres:
+    container_name: postgres
+    image: 'postgres:13-alpine'
+    restart: always
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+    networks:
+      - app-connect
+
+networks:
+  app-connect:
+    driver: bridge
         
