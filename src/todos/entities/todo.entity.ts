@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 import { Status } from './todo-status.enum';
 
-@Entity()
+@Entity({ name: 'todos' })
 export class Todo {
   @PrimaryGeneratedColumn('uuid')
   id: string;
