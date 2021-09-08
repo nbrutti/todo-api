@@ -5,7 +5,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Status } from './todo-status.enum';
 
 @Entity({ name: 'todos' })
 export class Todo {
@@ -16,11 +15,10 @@ export class Todo {
   description: string;
 
   @Column({
-    type: 'enum',
-    enum: Status,
-    default: Status.OPEN,
+    type: 'boolean',
+    default: false,
   })
-  status: Status;
+  completed: boolean;
 
   @CreateDateColumn()
   createdAt: Date;
