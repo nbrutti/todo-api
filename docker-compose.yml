@@ -28,7 +28,7 @@ services:
     networks:
       - app-connect
 
-  prod:
+  web:
     container_name: todo_api_prod
     image: 'todo-api-prod'
     build:
