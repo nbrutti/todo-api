@@ -9,12 +9,12 @@ import { Todo } from './entities/todo.entity';
 export class TodosService {
   constructor(
     @InjectRepository(Todo)
-    private readonly todoRepository: Repository<Todo>,
-  ) {}
+    private readonly todosRepository: Repository<Todo>,
+  ) { }
 
   async create(createTodoDto: CreateTodoDto): Promise<Todo> {
     try {
-      return await this.todoRepository.save(createTodoDto);
+      return await this.todosRepository.save(createTodoDto);
     } catch (err) {
       throw err;
     }
@@ -22,7 +22,7 @@ export class TodosService {
 
   async findAll(): Promise<Todo[]> {
     try {
-      return await this.todoRepository.find();
+      return await this.todosRepository.find();
     } catch (err) {
       throw err;
     }
@@ -30,7 +30,7 @@ export class TodosService {
 
   async findOne(id: string): Promise<Todo> {
     try {
-      return await this.todoRepository.findOne(id);
+      return await this.todosRepository.findOne(id);
     } catch (err) {
       throw err;
     }
@@ -41,8 +41,8 @@ export class TodosService {
     updateTodoDto: UpdateTodoDto,
   ): Promise<Partial<Todo>> {
     try {
-      await this.todoRepository.update(id, updateTodoDto);
-      return await this.todoRepository.findOne(id);
+      await this.todosRepository.update(id, updateTodoDto);
+      return await this.todosRepository.findOne(id);
     } catch (err) {
       throw err;
     }
@@ -50,7 +50,7 @@ export class TodosService {
 
   async remove(id: string): Promise<Partial<Todo>> {
     try {
-      const data = await this.todoRepository.delete(id);
+      const data = await this.todosRepository.delete(id);
       return { ...data, id };
     } catch (err) {
       throw err;
