@@ -10,7 +10,7 @@ export class TodosService {
   constructor(
     @InjectRepository(Todo)
     private readonly todosRepository: Repository<Todo>,
-  ) { }
+  ) {}
 
   async create(createTodoDto: CreateTodoDto): Promise<Todo> {
     try {
