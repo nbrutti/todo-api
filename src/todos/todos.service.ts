@@ -30,7 +30,7 @@ export class TodosService {
 
   async findOne(id: string): Promise<Todo> {
     try {
-      return await this.todosRepository.findOne(id);
+      return await this.todosRepository.findOneOrFail(id);
     } catch (err) {
       throw err;
     }
@@ -42,7 +42,7 @@ export class TodosService {
   ): Promise<Partial<Todo>> {
     try {
       await this.todosRepository.update(id, updateTodoDto);
-      return await this.todosRepository.findOne(id);
+      return await this.todosRepository.findOneOrFail(id);
     } catch (err) {
       throw err;
     }

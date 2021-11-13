@@ -67,15 +67,25 @@ describe('TodosService', () => {
 
   describe('findOne(id)', () => {
     it('if there is a task with id it must be returned', () => {
-      jest.spyOn(todosRepository, 'findOne').mockResolvedValue(allTodos[0]);
+      jest
+        .spyOn(todosRepository, 'findOneOrFail')
+        .mockResolvedValue(allTodos[0]);
+
       expect(todosService.findOne(mockedId)).resolves.toStrictEqual(
         allTodos[0],
       );
-      expect(todosRepository.findOne).toHaveBeenCalledWith(mockedId);
+      expect(todosRepository.findOneOrFail).toHaveBeenCalledWith(mockedId);
+    });
+
+    it('if it does not find a task with id it is expected to return error 500', () => {
+      const exception = new InternalServerErrorException();
+      jest.spyOn(todosRepository, 'findOneOrFail').mockRejectedValue(exception);
+      expect(todosService.findOne(mockedId)).rejects.toThrow(exception);
+      expect(todosRepository.findOneOrFail).toHaveBeenCalledWith(mockedId);
     });
   });
 
-  describe('update(id,todo)', () => {
+  describe('update(id, todo)', () => {
     it('should be returned a updated task', () => {
       const body: UpdateTodoDto = { description: 'updated description' };
       jest
@@ -83,13 +93,21 @@ describe('TodosService', () => {
         .mockResolvedValue({ affected: 1 } as UpdateResult);
 
       jest
-        .spyOn(todosRepository, 'findOne')
+        .spyOn(todosRepository, 'findOneOrFail')
         .mockResolvedValue({ ...allTodos[0], ...body });
 
       expect(todosService.update(mockedId, body)).resolves.toStrictEqual({
         ...allTodos[0],
         ...body,
       });
+      expect(todosRepository.update).toHaveBeenCalledWith(mockedId, body);
+    });
+
+    it('if it does not find a task with id it is expected to return error 500', () => {
+      const exception = new InternalServerErrorException();
+      const body: UpdateTodoDto = { description: 'updated description' };
+      jest.spyOn(todosRepository, 'update').mockRejectedValue(exception);
+      expect(todosService.update(mockedId, body)).rejects.toThrow(exception);
       expect(todosRepository.update).toHaveBeenCalledWith(mockedId, body);
     });
   });
@@ -104,6 +122,13 @@ describe('TodosService', () => {
         ...allTodos[0],
         ...{ id: mockedId },
       });
+      expect(todosRepository.delete).toHaveBeenCalledWith(mockedId);
+    });
+
+    it('if it does not find a task with id it is expected to return error 500', () => {
+      const exception = new InternalServerErrorException();
+      jest.spyOn(todosRepository, 'delete').mockRejectedValue(exception);
+      expect(todosService.remove(mockedId)).rejects.toThrow(exception);
       expect(todosRepository.delete).toHaveBeenCalledWith(mockedId);
     });
   });
