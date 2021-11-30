@@ -14,5 +14,8 @@ export const OrmConfig = (
   entities: [__dirname + '/../**/*.entity.{js,ts}'],
   synchronize: configService.get('TYPEORM_SYNC') === 'true',
   namingStrategy: new SnakeNamingStrategy(),
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+  ssl:
+    process.env.NODE_ENV === 'production'
+      ? { rejectUnauthorized: false }
+      : false,
 });
