@@ -1,21 +1,26 @@
-import { ConfigService } from '@nestjs/config';
+import { registerAs } from '@nestjs/config';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
-export const OrmConfig = (
-  configService: ConfigService,
-): TypeOrmModuleOptions => ({
-  type: 'postgres',
-  host: configService.get('POSTGRES_HOST'),
-  port: parseInt(configService.get('POSTGRES_PORT')),
-  username: configService.get('POSTGRES_USER'),
-  password: configService.get('POSTGRES_PASSWORD'),
-  database: configService.get('POSTGRES_DB'),
-  entities: [__dirname + '/../**/*.entity.{js,ts}'],
-  synchronize: configService.get('TYPEORM_SYNC') === 'true',
-  namingStrategy: new SnakeNamingStrategy(),
-  ssl:
-    process.env.NODE_ENV === 'production'
-      ? { rejectUnauthorized: false }
-      : false,
+export default registerAs('database', (): TypeOrmModuleOptions => {
+  return {
+    type: 'postgres',
+    host: process.env.POSTGRES_HOST,
+    port: parseInt(process.env.POSTGRES_PORT),
+    username: process.env.POSTGRES_USER,
+    password: process.env.POSTGRES_PASSWORD,
+    database: process.env.POSTGRES_DB,
+    entities: [__dirname + '/../**/*.entity.{js,ts}'],
+    synchronize: process.env.TYPEORM_SYNC === 'true',
+    namingStrategy: new SnakeNamingStrategy(),
+    migrationsTableName: 'migrations',
+    migrations: ['src/migrations/*{.ts,.js}'],
+    cli: {
+      migrationsDir: 'src/migrations',
+    },
+    ssl:
+      process.env.NODE_ENV === 'production'
+        ? { rejectUnauthorized: false }
+        : false,
+  };
 });
