@@ -29,7 +29,7 @@ jobs:
       run: yarn install --prefer-offline --frozen-lockfile
 
     - name: 🏠 Install Dependencies (from cache)
-      if: steps.cache-deps.outputs.cache-hit == 'true'
+      if: steps.yarn-cache.outputs.cache-hit == 'true'
       run: |
         yarn policies set-version
         yarn install --frozen-lockfile --ignore-optional --offline
