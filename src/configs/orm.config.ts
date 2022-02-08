@@ -14,9 +14,9 @@ export default registerAs('database', (): TypeOrmModuleOptions => {
     synchronize: process.env.TYPEORM_SYNC === 'true',
     namingStrategy: new SnakeNamingStrategy(),
     migrationsTableName: 'migrations',
-    migrations: ['src/migrations/*{.ts,.js}'],
+    migrations: ['dist/src/migrations/*'],
     cli: {
-      migrationsDir: 'src/migrations',
+      migrationsDir: './src/migrations',
     },
     ssl:
       process.env.NODE_ENV === 'production'
